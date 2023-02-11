@@ -16,8 +16,8 @@ interface LoginFormData {
 }
 
 export const initValues: LoginFormData = {
-  email: 'hello@altence.com',
-  password: 'some-test-pass',
+  email: 'hieuvu@gmail.com',
+  password: '123456',
 };
 
 export const LoginForm: React.FC = () => {
@@ -29,10 +29,13 @@ export const LoginForm: React.FC = () => {
 
   const handleSubmit = (values: LoginFormData) => {
     setLoading(true);
+    console.log('values', values);
     dispatch(doLogin(values))
       .unwrap()
-      .then(() => navigate('/'))
-      .catch((err) => {
+      .then(() => {
+        navigate('/');
+      })
+      .catch((err: any) => {
         notificationController.error({ message: err.message });
         setLoading(false);
       });

@@ -1,4 +1,3 @@
-import { UserModel } from '@app/domain/UserModel';
 const avatarImg = process.env.REACT_APP_ASSETS_BUCKET + '/avatars/avatar5.webp';
 
 const testUser = {
@@ -38,11 +37,11 @@ export const readToken = (): string => {
   return localStorage.getItem('accessToken') || 'bearerToken';
 };
 
-export const persistUser = (user: UserModel): void => {
+export const persistUser = (user: any): void => {
   localStorage.setItem('user', JSON.stringify(user));
 };
 
-export const readUser = (): UserModel | null => {
+export const readUser = (): any | null => {
   const userStr = localStorage.getItem('user');
 
   return userStr ? JSON.parse(userStr) : testUser;
