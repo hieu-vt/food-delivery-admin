@@ -1,10 +1,11 @@
-import { UserModel } from '@app/domain/UserModel';
+import { DataUserModal } from '@app/domain/UserModel';
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import * as S from './ProfileInfo.styles';
+import { Avatar } from '@app/components/common/Avatar/Avatar';
 
 interface ProfileInfoProps {
-  profileData: UserModel | null;
+  profileData: DataUserModal | null;
 }
 
 export const ProfileInfo: React.FC<ProfileInfoProps> = ({ profileData }) => {
@@ -14,9 +15,11 @@ export const ProfileInfo: React.FC<ProfileInfoProps> = ({ profileData }) => {
 
   return profileData ? (
     <S.Wrapper>
-      <S.ImgWrapper>{/* <Avatar shape="circle" src={profileData?.imgUrl} alt="Profile" /> */}</S.ImgWrapper>
-      <S.Title>{`${profileData?.data?.first_name} ${profileData?.data?.last_name}`}</S.Title>
-      {/* <S.Subtitle>{profileData?.userName}</S.Subtitle> */}
+      <S.ImgWrapper>
+        <Avatar shape="circle" src={profileData?.avatar?.url} alt="Profile" />
+      </S.ImgWrapper>
+      <S.Title>{`${profileData?.first_name} ${profileData?.last_name}`}</S.Title>
+      <S.Subtitle>{profileData?.first_name}</S.Subtitle>
       <S.FullnessWrapper>
         <S.FullnessLine width={fullness}>{fullness}%</S.FullnessLine>
       </S.FullnessWrapper>

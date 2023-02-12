@@ -1,47 +1,63 @@
-import React, { useEffect, useState, useCallback } from 'react';
-import { Col, Row, Space, TablePaginationConfig } from 'antd';
-import { BasicTableRow, getBasicTableData, Pagination, Tag } from 'api/table.api';
-import { Table } from 'components/common/Table/Table';
+import { Image } from '@app/api/food.api';
+import { FoodResponse } from '@app/domain/FoodModal';
+import { useAppDispatch } from '@app/hooks/reduxHooks';
+import { doGetFood } from '@app/store/slices/foodSlice';
+import { Col, Image as ImageAnt, Row, Space, TablePaginationConfig } from 'antd';
 import { ColumnsType } from 'antd/es/table';
+import { BasicTableRow, Pagination } from 'api/table.api';
+import { Table } from 'components/common/Table/Table';
 import { Button } from 'components/common/buttons/Button/Button';
-import { useTranslation } from 'react-i18next';
-import { defineColorByPriority } from '@app/utils/utils';
 import { notificationController } from 'controllers/notificationController';
-import { Status } from '@app/components/profile/profileCard/profileFormNav/nav/payments/paymentHistory/Status/Status';
-import { useMounted } from '@app/hooks/useMounted';
-
-const initialPagination: Pagination = {
-  current: 1,
-  pageSize: 5,
-};
+import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 export const BasicTable: React.FC = () => {
+  const refInitialPagination = useRef<Pagination>({
+    current: 1,
+    pageSize: 10,
+  });
   const [tableData, setTableData] = useState<{ data: BasicTableRow[]; pagination: Pagination; loading: boolean }>({
     data: [],
-    pagination: initialPagination,
+    pagination: refInitialPagination.current,
     loading: false,
   });
   const { t } = useTranslation();
-  const { isMounted } = useMounted();
+  const dispatch = useAppDispatch();
 
-  const fetch = useCallback(
-    (pagination: Pagination) => {
-      setTableData((tableData) => ({ ...tableData, loading: true }));
-      getBasicTableData(pagination).then((res) => {
-        if (isMounted.current) {
-          setTableData({ data: res.data, pagination: res.pagination, loading: false });
-        }
+  const fetch = useCallback((pagination: Pagination) => {
+    setTableData((tableData) => ({ ...tableData, loading: true }));
+    dispatch(doGetFood({ page: pagination.current, limit: pagination.pageSize }))
+      .unwrap()
+      .then((data: FoodResponse) => {
+        const mappingDataTable = data.data.map((item, index) => ({
+          key: index + new Date(item.created_at).getSeconds(),
+          name: item.name,
+          price: item.price,
+          description: item.description,
+          images: item.images,
+          id: item.id,
+        })) as unknown as BasicTableRow[];
+        refInitialPagination.current.total = data.paging.total;
+        setTableData((tableData) => ({
+          ...tableData,
+          data: [...tableData.data, ...mappingDataTable],
+          pagination: pagination,
+          loading: false,
+        }));
+      })
+      .catch((err: any) => {
+        notificationController.error({ message: err.message });
+        setTableData((tableData) => ({ ...tableData, loading: false }));
       });
-    },
-    [isMounted],
-  );
+  }, []);
 
   useEffect(() => {
-    fetch(initialPagination);
+    fetch(refInitialPagination.current);
   }, [fetch]);
 
   const handleTableChange = (pagination: TablePaginationConfig) => {
-    fetch(pagination);
+    refInitialPagination.current = pagination;
+    fetch(refInitialPagination.current);
   };
 
   const handleDeleteRow = (rowId: number) => {
@@ -62,70 +78,29 @@ export const BasicTable: React.FC = () => {
       render: (text: string) => <span>{text}</span>,
       filterMode: 'tree',
       filterSearch: true,
-      filters: [
-        {
-          text: t('common.firstName'),
-          value: 'firstName',
-          children: [
-            {
-              text: 'Joe',
-              value: 'Joe',
-            },
-            {
-              text: 'Pavel',
-              value: 'Pavel',
-            },
-            {
-              text: 'Jim',
-              value: 'Jim',
-            },
-            {
-              text: 'Josh',
-              value: 'Josh',
-            },
-          ],
-        },
-        {
-          text: t('common.lastName'),
-          value: 'lastName',
-          children: [
-            {
-              text: 'Green',
-              value: 'Green',
-            },
-            {
-              text: 'Black',
-              value: 'Black',
-            },
-            {
-              text: 'Brown',
-              value: 'Brown',
-            },
-          ],
-        },
-      ],
+      filters: [],
       onFilter: (value: string | number | boolean, record: BasicTableRow) => record.name.includes(value.toString()),
     },
     {
-      title: t('common.age'),
-      dataIndex: 'age',
-      sorter: (a: BasicTableRow, b: BasicTableRow) => a.age - b.age,
+      title: t('common.price'),
+      dataIndex: 'price',
+      sorter: (a: BasicTableRow, b: BasicTableRow) => a.price - b.price,
       showSorterTooltip: false,
     },
     {
-      title: t('common.address'),
-      dataIndex: 'address',
+      title: t('common.description'),
+      dataIndex: 'description',
     },
     {
-      title: t('common.tags'),
-      key: 'tags',
-      dataIndex: 'tags',
-      render: (tags: Tag[]) => (
+      title: t('common.images'),
+      key: 'images',
+      dataIndex: 'images',
+      render: (tags: Image[]) => (
         <Row gutter={[10, 10]}>
-          {tags.map((tag: Tag) => {
+          {tags.map((image: Image) => {
             return (
-              <Col key={tag.value}>
-                <Status color={defineColorByPriority(tag.priority)} text={tag.value.toUpperCase()} />
+              <Col key={image.url}>
+                <ImageAnt src={image.url} width={image.width} height={image.height} />
               </Col>
             );
           })}
@@ -145,7 +120,7 @@ export const BasicTable: React.FC = () => {
                 notificationController.info({ message: t('tables.inviteMessage', { name: record.name }) });
               }}
             >
-              {t('tables.invite')}
+              {t('tables.update')}
             </Button>
             <Button type="default" danger onClick={() => handleDeleteRow(record.key)}>
               {t('tables.delete')}

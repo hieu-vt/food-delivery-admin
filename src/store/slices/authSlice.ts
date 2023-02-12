@@ -10,6 +10,7 @@ import {
   SecurityCodePayload,
   NewPasswordData,
   setNewPassword,
+  getProfile,
 } from '@app/api/auth.api';
 import { setUser } from '@app/store/slices/userSlice';
 import { deleteToken, deleteUser, persistToken, readToken } from '@app/services/localStorage.service';
@@ -28,6 +29,14 @@ export const doLogin = createAsyncThunk('auth/doLogin', async (loginPayload: Log
     persistToken(data.token);
 
     return data.token;
+  });
+});
+
+export const doGetProfile = createAsyncThunk('auth/profile', async (payload: any, { dispatch }) => {
+  return getProfile().then(({ data }) => {
+    dispatch(setUser(data));
+
+    return data;
   });
 });
 

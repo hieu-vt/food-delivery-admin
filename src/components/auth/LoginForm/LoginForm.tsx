@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { BaseForm } from '@app/components/common/forms/BaseForm/BaseForm';
 import { useAppDispatch } from '@app/hooks/reduxHooks';
-import { doLogin } from '@app/store/slices/authSlice';
+import { doGetProfile, doLogin } from '@app/store/slices/authSlice';
 import { notificationController } from '@app/controllers/notificationController';
 import { ReactComponent as FacebookIcon } from '@app/assets/icons/facebook.svg';
 import { ReactComponent as GoogleIcon } from '@app/assets/icons/google.svg';
@@ -32,7 +32,16 @@ export const LoginForm: React.FC = () => {
     dispatch(doLogin(values))
       .unwrap()
       .then(() => {
-        navigate('/');
+        dispatch(doGetProfile(null))
+          .unwrap()
+          .then(() => {
+            navigate('/');
+            setLoading(false);
+          })
+          .catch((err: any) => {
+            notificationController.error({ message: err.message });
+            setLoading(false);
+          });
       })
       .catch((err: any) => {
         notificationController.error({ message: err.message });

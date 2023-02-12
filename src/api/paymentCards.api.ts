@@ -2,7 +2,7 @@ import { cardThemes } from '@app/constants/cardThemes';
 import { PaymentCard } from '@app/interfaces/interfaces';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-export const getPaymentCards = (id: number): Promise<PaymentCard[]> =>
+export const getPaymentCards = (id: string): Promise<PaymentCard[]> =>
   new Promise((res) =>
     setTimeout(
       () =>

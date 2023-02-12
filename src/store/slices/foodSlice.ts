@@ -1,10 +1,9 @@
-import { FoodRequest, createFood } from '@app/api/food.api';
-import { FoodModel } from '@app/domain/FoodModal';
-import { persistUser } from '@app/services/localStorage.service';
+import { FoodRequest, GetFoodRequest, createFood, getFoods } from '@app/api/food.api';
+import { FoodResponse } from '@app/domain/FoodModal';
 import { PrepareAction, createAction, createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 
 export interface FoodState {
-  foods: Array<FoodModel> | null;
+  foods: Array<FoodResponse> | null;
 }
 
 const initialState: FoodState = {
@@ -17,11 +16,13 @@ export const doCreateFood = createAsyncThunk('food/doCreateFood', async (foodPay
   });
 });
 
-export const setFoods = createAction<PrepareAction<Array<FoodModel>>>('user/setFoods', (newUser) => {
-  persistUser(newUser);
+export const doGetFood = createAsyncThunk('food/doGetFood', async (foodParams: GetFoodRequest | null, { dispatch }) => {
+  return getFoods(foodParams).then((data) => data);
+});
 
+export const setFoods = createAction<PrepareAction<Array<FoodResponse>>>('user/setFoods', (foods) => {
   return {
-    payload: newUser,
+    payload: foods,
   };
 });
 

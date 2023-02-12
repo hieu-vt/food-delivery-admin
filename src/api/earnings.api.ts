@@ -19,7 +19,7 @@ export interface TotalEarning {
   timeline: Earning[];
 }
 
-export const getBalance = (id: number): Promise<Balance> => {
+export const getBalance = (id: string): Promise<Balance> => {
   return new Promise((res) => {
     setTimeout(() => {
       res({
@@ -31,7 +31,7 @@ export const getBalance = (id: number): Promise<Balance> => {
   });
 };
 
-export const getTotalEarning = (id: number, currency: CurrencyTypeEnum): Promise<TotalEarning> => {
+export const getTotalEarning = (id: string, currency: CurrencyTypeEnum): Promise<TotalEarning> => {
   return new Promise((res) => {
     setTimeout(() => {
       res({

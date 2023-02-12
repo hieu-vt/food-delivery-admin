@@ -1,4 +1,5 @@
 import { httpApi } from '@app/api/http.api';
+import { FoodModel } from '@app/domain/FoodModal';
 // import './mocks/auth.api.mock';
 import { LoginResponse } from '@app/domain/UserModel';
 
@@ -16,7 +17,7 @@ export interface Image {
   height: number;
 }
 
-export interface GetRequest {
+export interface GetFoodRequest {
   page?: number;
   limit?: number;
 }
@@ -24,5 +25,5 @@ export interface GetRequest {
 export const createFood = (foodPayload: FoodRequest): Promise<LoginResponse> =>
   httpApi.post<LoginResponse>('foods', { ...foodPayload }).then(({ data }) => data);
 
-export const getFood = (signUpData: GetRequest): Promise<undefined> =>
-  httpApi.post<undefined>('foods', { ...signUpData }).then(({ data }) => data);
+export const getFoods = (params?: GetFoodRequest | null): Promise<any> =>
+  httpApi.get<FoodModel>('foods', { params }).then(({ data }) => data);

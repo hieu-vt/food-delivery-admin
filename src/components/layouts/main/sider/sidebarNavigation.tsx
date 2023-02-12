@@ -13,7 +13,7 @@ export const sidebarNavigation: SidebarNavigationItem[] = [
   {
     title: 'common.dataTables',
     key: 'dataTables',
-    url: '/data-tables',
+    url: '/',
     icon: <TableOutlined />,
   },
   {

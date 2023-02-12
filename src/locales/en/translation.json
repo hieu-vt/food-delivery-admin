@@ -115,7 +115,9 @@
   "common": {
     "address": "Address",
     "advancedForms": "Create foods",
-    "age": "Age",
+    "price": "Price",
+    "description": "Description",
+    "images": "images",
     "alert": "Alert",
     "apps": "Apps",
     "auth": "Auth",
@@ -833,7 +835,7 @@
     "cancelInfo": "Sure to cancel?",
     "delete": "Delete",
     "editableTable": "Editable Table",
-    "invite": "Invite",
+    "update": "Update",
     "inviteMessage": "{{name}} invited successfully",
     "treeTable": "Tree Table"
   },

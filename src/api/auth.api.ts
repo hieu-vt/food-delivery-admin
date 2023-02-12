@@ -36,6 +36,8 @@ export const login = (loginPayload: LoginRequest): Promise<LoginResponse> =>
     return data;
   });
 
+export const getProfile = (): Promise<LoginResponse> => httpApi.get<LoginResponse>('profile').then(({ data }) => data);
+
 export const signUp = (signUpData: SignUpRequest): Promise<undefined> =>
   httpApi.post<undefined>('signUp', { ...signUpData }).then(({ data }) => data);
 
