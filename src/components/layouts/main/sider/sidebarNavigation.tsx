@@ -1,16 +1,5 @@
+import { FormOutlined, TableOutlined } from '@ant-design/icons';
 import React from 'react';
-import {
-  CompassOutlined,
-  DashboardOutlined,
-  FormOutlined,
-  HomeOutlined,
-  LayoutOutlined,
-  LineChartOutlined,
-  TableOutlined,
-  UserOutlined,
-  BlockOutlined,
-} from '@ant-design/icons';
-import { ReactComponent as NftIcon } from '@app/assets/icons/nft-icon.svg';
 
 export interface SidebarNavigationItem {
   title: string;

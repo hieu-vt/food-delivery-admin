@@ -29,7 +29,6 @@ export const LoginForm: React.FC = () => {
 
   const handleSubmit = (values: LoginFormData) => {
     setLoading(true);
-    console.log('values', values);
     dispatch(doLogin(values))
       .unwrap()
       .then(() => {

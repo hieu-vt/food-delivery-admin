@@ -23,14 +23,11 @@ const initialState: AuthSlice = {
 };
 
 export const doLogin = createAsyncThunk('auth/doLogin', async (loginPayload: LoginRequest, { dispatch }) => {
-  console.log('first', loginPayload);
-  return login(loginPayload).then((res) => {
-    console.log('res', res);
-    return null;
+  return login(loginPayload).then(({ data }) => {
     // dispatch(setUser(res.user));
-    // persistToken(res.token);
+    persistToken(data.token);
 
-    // return res.token;
+    return data.token;
   });
 });
 
@@ -64,7 +61,7 @@ const authSlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder.addCase(doLogin.fulfilled, (state, action) => {
-      state.token = null;
+      state.token = action.payload;
     });
     builder.addCase(doLogout.fulfilled, (state) => {
       state.token = '';
